@@ -45,13 +45,13 @@ label{font-weight:900;display:block;margin:0 0 7px;color:#0a0a0a}
 input,select{width:100%;font:inherit;border:1px solid rgba(0,0,0,.14);border-radius:15px;background:rgba(255,255,255,.68);color:var(--ink);padding:13px 14px;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
 input:focus,select:focus{border-color:rgba(22,163,74,.72);box-shadow:0 0 0 4px rgba(22,163,74,.12),inset 0 1px 0 rgba(255,255,255,.75)}
 .stack{display:grid;gap:13px}
-.row{display:flex;gap:10px;flex-wrap:wrap}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 button{border:0;border-radius:999px;padding:11px 16px;font-weight:950;cursor:pointer;background:#111;color:#fff;box-shadow:0 14px 30px rgba(0,0,0,.22)}
 button:hover{filter:brightness(1.05)}
 button#go,button.primary{background:var(--green);box-shadow:0 14px 28px rgba(22,163,74,.18)}
 button.secondary{background:rgba(255,255,255,.66);color:#111;border:1px solid rgba(0,0,0,.14);box-shadow:none}
 button.danger{background:rgba(255,255,255,.66);color:var(--red);border:1px solid rgba(180,35,24,.22);box-shadow:none}
-button:disabled{opacity:.6;cursor:not-allowed}
+button:disabled{opacity:.58;cursor:not-allowed}
 .hint{font-size:.9rem;color:var(--muted);margin:0}
 .samples{display:flex;flex-wrap:wrap;gap:8px}
 .sample{border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.56);border-radius:999px;padding:6px 10px;font-weight:850;font-size:.86rem;cursor:pointer;color:#111}
@@ -63,13 +63,15 @@ button:disabled{opacity:.6;cursor:not-allowed}
 .box{background:var(--glass-soft);border:1px solid rgba(255,255,255,.5);border-radius:20px;padding:16px;min-height:105px;box-shadow:inset 0 1px 0 rgba(255,255,255,.58)}
 .box-title{font-size:.76rem;font-weight:950;color:#3b3b3b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
 .box-value{font-weight:850;white-space:pre-wrap;color:#080808}.meaning{font-size:1.2rem}
-.history{margin-top:18px}.history-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.history{margin-top:18px}.history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
 .history-list{display:grid;gap:10px}.item{border:1px solid rgba(255,255,255,.5);border-radius:20px;background:var(--glass-soft);padding:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.58)}
 .item b{font-size:1.05rem}.meta{color:var(--muted);font-size:.85rem;margin-top:4px}
 .empty{color:var(--muted);border:1px dashed rgba(0,0,0,.18);border-radius:18px;padding:16px;background:rgba(255,255,255,.45)}
 .footer{font-size:.88rem;color:var(--footer);margin-top:16px;text-align:center}
-.note{background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.5);color:#111;border-radius:18px;padding:12px;font-weight:750;box-shadow:inset 0 -2px 0 rgba(22,163,74,.42)}
-@media print{body{background:#fff;color:#000}.nav,.hero,.footer,.history-head .row{display:none}.wrap{width:100%;padding:0}.card{box-shadow:none;border:0;background:#fff}.item,.box,.note{border:1px solid #ddd;background:#fff}}
+.note,.sync-box{background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.5);color:#111;border-radius:18px;padding:12px;font-weight:750;box-shadow:inset 0 -2px 0 rgba(22,163,74,.42)}
+.sync-box{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;box-shadow:none}
+.sync-title{font-weight:950;margin:0}.sync-text{margin:3px 0 0;color:#444;font-size:.9rem;font-weight:760}
+@media print{body{background:#fff;color:#000}.nav,.hero,.footer,.history-head .row{display:none}.wrap{width:100%;padding:0}.card{box-shadow:none;border:0;background:#fff}.item,.box,.note,.sync-box{border:1px solid #ddd;background:#fff}}
 </style>
 </head>
 <body>
@@ -90,7 +92,11 @@ button:disabled{opacity:.6;cursor:not-allowed}
     <div class="card">
       <div class="tag" id="modeTag">Antonyms & Synonyms</div>
       <h1>Enter a word or phrase. Build your government exam revision PDF automatically.</h1>
-      <p class="lead">For each lookup, get Hindi meaning, two synonyms, two antonyms, an exam-style example sentence, and the Hindi meaning of that example. Every generated entry is saved locally for later revision.</p>
+      <p class="lead">For each lookup, get Hindi meaning, two synonyms, two antonyms, an exam-style example sentence, and the Hindi meaning of that example. Every generated entry is saved for later revision.</p>
+      <div class="sync-box" aria-live="polite">
+        <div><p class="sync-title" id="syncTitle">Sync checking...</p><p class="sync-text" id="syncText">Local revision works even without sign-in.</p></div>
+        <div class="row"><button class="secondary" id="signInBtn" type="button" onclick="signIn()">Sign in with Google</button><button class="secondary" id="signOutBtn" type="button" onclick="signOut()" hidden>Sign out</button></div>
+      </div>
     </div>
     <div class="card stack">
       <div><label id="termLabel" for="term">Word or phrase</label><input id="term" placeholder="Example: benevolent, prudent, mitigate" autocomplete="off"></div>
@@ -116,21 +122,20 @@ button:disabled{opacity:.6;cursor:not-allowed}
   </section>
 
   <section class="card history">
-    <div class="history-head"><div><h2 style="margin:0">Saved exam revision list</h2><p class="hint">Stored locally in this browser.</p></div><div class="row"><button class="primary" onclick="savePdf()">Download / Save PDF</button><button class="secondary" onclick="downloadJson()">Download JSON</button><button class="danger" onclick="clearHistory()">Clear</button></div></div>
+    <div class="history-head"><div><h2 style="margin:0">Saved exam revision list</h2><p class="hint" id="historyHint">Stored locally in this browser. Sign in to sync after Firebase is configured.</p></div><div class="row"><button class="primary" onclick="savePdf()">Download / Save PDF</button><button class="secondary" onclick="downloadJson()">Download JSON</button><button class="danger" onclick="clearHistory()">Clear</button></div></div>
     <div id="history" class="history-list"></div>
   </section>
 
-  <div class="footer">Static GitHub Pages app. No server storage. Results use built-in exam examples plus public lookup services where available.</div>
+  <div class="footer">vocab.ai is built for government exam English revision. Results use built-in exam examples plus public lookup services where available.</div>
 </main>
 
+<script src="firebase-config.js"></script>
 <script>
-const KEY='vocab-ai-history-v4',OLD_KEYS=['vocab-ai-history-v3','vocab-ai-ssc-cgl-history-v2','vocab-ai-ssc-cgl-history-v1'];
+const KEY='vocab-ai-history-v5',OLD_KEYS=['vocab-ai-history-v4','vocab-ai-history-v3','vocab-ai-ssc-cgl-history-v2','vocab-ai-ssc-cgl-history-v1'];
 const THEME_KEY='vocab-ai-theme';
-let current=null,mode='Antonyms & Synonyms';
+let current=null,mode='Antonyms & Synonyms',auth=null,db=null,user=null,cloudUnsub=null,syncBooted=false;
 const $=id=>document.getElementById(id);
-const FULL_ONE_WORD='One Word Substitution';
-const FULL_ANT_SYN='Antonyms & Synonyms';
-const GRAMMAR='Grammar';
+const FULL_ONE_WORD='One Word Substitution',FULL_ANT_SYN='Antonyms & Synonyms',GRAMMAR='Grammar';
 const modes={
   [FULL_ONE_WORD]:{label:'One Word Substitution',hint:'Enter one-word substitution words or short definitions used in government exams.',placeholder:'Example: bibliophile, philanthropist, omnipresent',samples:['bibliophile','philanthropist','omnipresent','optimist','introvert']},
   'Idioms':{label:'Idiom or phrase',hint:'Enter idioms and phrases asked in government exam English sections.',placeholder:'Example: a blessing in disguise, once in a blue moon',samples:['a blessing in disguise','once in a blue moon','spill the beans','break the ice','hit the nail on the head']},
@@ -166,33 +171,45 @@ const built={
  'direct speech':{m:'प्रत्यक्ष कथन; किसी के शब्दों को सीधे कहना',s:['quoted speech','direct narration'],a:['indirect speech','reported speech'],e:'Direct speech uses the exact words of the speaker.',h:'प्रत्यक्ष कथन में वक्ता के ठीक वही शब्द लिखे जाते हैं।'},
  'indirect speech':{m:'अप्रत्यक्ष कथन; बात को अपने शब्दों में कहना',s:['reported speech','indirect narration'],a:['direct speech','quoted speech'],e:'Indirect speech reports what someone said without exact quotation.',h:'अप्रत्यक्ष कथन में किसी की बात बिना ठीक-ठीक उद्धरण के बताई जाती है।'}
 };
+function clean(x){return (x||'').trim()}
+function two(arr){return [...new Set((arr||[]).map(x=>typeof x==='string'?x:x.word).filter(Boolean).map(x=>x.trim().toLowerCase()).filter(Boolean))].slice(0,2)}
 function normalizeMode(x){if(x==='OWS')return FULL_ONE_WORD;if(x==='Anto & Syno')return FULL_ANT_SYN;if(x==='Grammar Rules')return GRAMMAR;return x||FULL_ANT_SYN}
+function esc(x){return String(x??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 function status(t,c=''){const el=$('status');el.textContent=t;el.className='status '+c}
 function applyTheme(t){const theme=t==='light'?'light':'dark';document.body.dataset.theme=theme;const isLight=theme==='light';const icon=$('themeIcon'),label=$('themeLabel');if(icon)icon.textContent=isLight?'☀':'☾';if(label)label.textContent=isLight?'Light theme':'Dark theme';const btn=document.querySelector('.theme-toggle');if(btn){btn.setAttribute('aria-label',isLight?'Switch to dark theme':'Switch to light theme');btn.title=isLight?'Switch to dark theme':'Switch to light theme'}localStorage.setItem(THEME_KEY,theme)}
 function toggleTheme(){applyTheme((document.body.dataset.theme||'dark')==='dark'?'light':'dark')}
 function initTheme(){applyTheme(localStorage.getItem(THEME_KEY)||'dark')}
 function setMode(m){mode=normalizeMode(m);document.querySelectorAll('.pill[data-mode]').forEach(p=>p.classList.toggle('active',p.dataset.mode===mode));$('modeTag').textContent=mode;$('termLabel').textContent=modes[mode].label;$('modeHint').textContent=modes[mode].hint;$('term').placeholder=modes[mode].placeholder;renderSamples()}
 function renderSamples(){const box=$('samples');box.innerHTML='';modes[mode].samples.forEach(w=>{const b=document.createElement('button');b.className='sample';b.type='button';b.textContent=w;b.onclick=()=>{$('term').value=w;generateEntry()};box.appendChild(b)})}
-function clean(s){return(String(s||'')).trim()}
-function two(a){return[...new Set((a||[]).map(x=>typeof x==='string'?x:x.word).filter(Boolean).map(x=>x.toLowerCase()))].slice(0,2)}
 async function json(url){const r=await fetch(url);if(!r.ok)throw Error('fetch failed');return r.json()}
 async function hi(text){try{const j=await json('https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair=en|hi');return clean(j?.responseData?.translatedText)}catch(e){return''}}
 async function words(term,rel){try{return two(await json(`https://api.datamuse.com/words?${rel}=${encodeURIComponent(term)}&max=8`))}catch(e){return[]}}
 async function dictExample(term){if(term.includes(' '))return'';try{const j=await json('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(term));for(const m of j?.[0]?.meanings||[])for(const d of m.definitions||[])if(d.example)return d.example}catch(e){}return''}
 function fallbackExample(term){if(mode==='Idioms')return `The phrase "${term}" is useful in government exam English.`;if(mode===FULL_ONE_WORD)return `The word "${term}" is often revised for one word substitution questions.`;if(mode==='Spellings')return `Write "${term}" carefully during spelling practice.`;if(mode===GRAMMAR)return `The grammar topic "${term}" is important for error spotting and sentence improvement.`;return `The word "${term}" is useful for vocabulary revision.`}
 function setResult(d){current=d;$('rMode').textContent=d.mode;$('rTerm').textContent=d.term;$('rMeaning').textContent=d.meaning||'-';$('rSyn').textContent=d.synonyms?.length?d.synonyms.join(', '):'-';$('rAnt').textContent=d.antonyms?.length?d.antonyms.join(', '):'-';$('rEx').textContent=d.example||'-';$('rExHi').textContent=d.exampleHindi||'-'}
-function load(){let h=JSON.parse(localStorage.getItem(KEY)||'[]');for(const k of OLD_KEYS){const old=JSON.parse(localStorage.getItem(k)||'[]');if(old.length){h=[...h,...old];localStorage.removeItem(k)}}h=h.map(x=>({...x,mode:normalizeMode(x.mode)}));localStorage.setItem(KEY,JSON.stringify(h));return h}
-function saveList(h){localStorage.setItem(KEY,JSON.stringify(h));renderHistory()}
-function saveCurrent(){if(!current){status('Generate an entry first.','warn');return}const h=load();h.unshift({...current,id:Date.now(),savedAt:new Date().toLocaleString()});saveList(h);status('Saved for revision.','ok')}
-async function generateEntry(){const term=clean($('term').value);if(!term){status('Enter a word, phrase, or grammar topic first.','err');return}const key=term.toLowerCase();$('go').disabled=true;status('Generating entry...','warn');try{let d;if(built[key]){const b=built[key];d={mode,term,meaning:b.m,synonyms:b.s,antonyms:b.a,example:b.e,exampleHindi:b.h}}else{const [meaning,synonyms,antonyms,exampleRaw]=await Promise.all([hi(term),words(term,'rel_syn'),words(term,'rel_ant'),dictExample(term)]);const example=exampleRaw||fallbackExample(term);const exampleHindi=await hi(example);d={mode,term,meaning:meaning||'Hindi meaning not found automatically.',synonyms,antonyms,example,exampleHindi:exampleHindi||'Example Hindi meaning not found automatically.'}}setResult(d);saveCurrent()}catch(e){setResult({mode,term,meaning:'Lookup failed. Try another word or use this as a manual revision entry.',synonyms:[],antonyms:[],example:fallbackExample(term),exampleHindi:'-'});saveCurrent()}finally{$('go').disabled=false}}
-function renderHistory(){const h=load();const box=$('history');if(!h.length){box.innerHTML='<div class="empty">No saved entries yet. Generate a word, phrase, or grammar topic to start your revision list.</div>';return}box.innerHTML='';h.forEach((x,i)=>{const d=document.createElement('div');d.className='item';d.innerHTML=`<b>${i+1}. ${x.term}</b><div class="meta">${normalizeMode(x.mode)} | ${x.savedAt||''}</div><div>Hindi: ${x.meaning||'-'}</div><div>Synonyms: ${(x.synonyms||[]).join(', ')||'-'}</div><div>Antonyms: ${(x.antonyms||[]).join(', ')||'-'}</div><div>Example: ${x.example||'-'}</div><div>Hindi Example: ${x.exampleHindi||'-'}</div>`;box.appendChild(d)})}
+function dedupeSort(list){const seen=new Map();(list||[]).forEach(x=>{if(!x)return;const id=String(x.id||(`${x.term||''}-${x.savedAtMs||Date.now()}`));seen.set(id,{...x,id,mode:normalizeMode(x.mode),savedAtMs:Number(x.savedAtMs||Date.now())})});return [...seen.values()].sort((a,b)=>(b.savedAtMs||0)-(a.savedAtMs||0))}
+function load(){let h=[];try{h=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){h=[]}for(const k of OLD_KEYS){try{const old=JSON.parse(localStorage.getItem(k)||'[]');if(old.length){h=[...h,...old];localStorage.removeItem(k)}}catch(e){}}h=dedupeSort(h);localStorage.setItem(KEY,JSON.stringify(h));return h}
+function saveLocal(h,shouldRender=true){localStorage.setItem(KEY,JSON.stringify(dedupeSort(h)));if(shouldRender)renderHistory()}
+function cloudCollection(){return user&&db?db.collection('users').doc(user.uid).collection('entries'):null}
+async function saveToCloud(entry){const col=cloudCollection();if(!col)return;await col.doc(String(entry.id)).set(entry,{merge:true})}
+async function saveCurrent(){if(!current){status('Generate an entry first.','warn');return}const entry={...current,id:String(Date.now())+'-'+Math.random().toString(36).slice(2,8),savedAt:new Date().toLocaleString(),savedAtMs:Date.now()};const h=load();saveLocal([entry,...h]);try{await saveToCloud(entry);status(user?'Saved and synced.':'Saved for revision.','ok')}catch(e){status('Saved locally. Cloud sync failed.','warn')}}
+async function generateEntry(){const term=clean($('term').value);if(!term){status('Enter a word, phrase, or grammar topic first.','err');return}const key=term.toLowerCase();$('go').disabled=true;status('Generating entry...','warn');try{let d;if(built[key]){const b=built[key];d={mode,term,meaning:b.m,synonyms:b.s,antonyms:b.a,example:b.e,exampleHindi:b.h}}else{const [meaning,synonyms,antonyms,exampleRaw]=await Promise.all([hi(term),words(term,'rel_syn'),words(term,'rel_ant'),dictExample(term)]);const example=exampleRaw||fallbackExample(term);const exampleHindi=await hi(example);d={mode,term,meaning:meaning||'Hindi meaning not found automatically.',synonyms,antonyms,example,exampleHindi:exampleHindi||'Example Hindi meaning not found automatically.'}}setResult(d);await saveCurrent()}catch(e){setResult({mode,term,meaning:'Lookup failed. Try another word or use this as a manual revision entry.',synonyms:[],antonyms:[],example:fallbackExample(term),exampleHindi:'-'});await saveCurrent()}finally{$('go').disabled=false}}
+function renderHistory(){const h=load();const box=$('history');$('historyHint').textContent=user?'Synced with your Google account and mirrored locally.':'Stored locally in this browser. Sign in to sync after Firebase is configured.';if(!h.length){box.innerHTML='<div class="empty">No saved entries yet. Generate a word, phrase, or grammar topic to start your revision list.</div>';return}box.innerHTML='';h.forEach((x,i)=>{const d=document.createElement('div');d.className='item';d.innerHTML=`<b>${i+1}. ${esc(x.term)}</b><div class="meta">${esc(normalizeMode(x.mode))} | ${esc(x.savedAt||'')}</div><div>Hindi: ${esc(x.meaning||'-')}</div><div>Synonyms: ${esc((x.synonyms||[]).join(', ')||'-')}</div><div>Antonyms: ${esc((x.antonyms||[]).join(', ')||'-')}</div><div>Example: ${esc(x.example||'-')}</div><div>Hindi Example: ${esc(x.exampleHindi||'-')}</div>`;box.appendChild(d)})}
 function textCurrent(){if(!current)return'';return `Section: ${current.mode}\nWord/Phrase/Topic: ${current.term}\nHindi Meaning: ${current.meaning}\nSynonyms: ${(current.synonyms||[]).join(', ')}\nAntonyms: ${(current.antonyms||[]).join(', ')}\nExample: ${current.example}\nExample Hindi: ${current.exampleHindi}`}
 async function copyCurrent(){if(!current){status('Generate an entry first.','warn');return}await navigator.clipboard.writeText(textCurrent());status('Copied.','ok')}
 function downloadJson(){const blob=new Blob([JSON.stringify(load(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='vocab-ai-revision.json';a.click();URL.revokeObjectURL(a.href)}
-function savePdf(){const h=load();if(!h.length){status('No saved entries to download.','warn');return}const rows=h.map((x,i)=>`<article><h3>${i+1}. ${x.term}</h3><p><b>Section:</b> ${normalizeMode(x.mode)}</p><p><b>Hindi Meaning:</b> ${x.meaning||'-'}</p><p><b>Synonyms:</b> ${(x.synonyms||[]).join(', ')||'-'}</p><p><b>Antonyms:</b> ${(x.antonyms||[]).join(', ')||'-'}</p><p><b>Example:</b> ${x.example||'-'}</p><p><b>Example Meaning in Hindi:</b> ${x.exampleHindi||'-'}</p></article>`).join('');const w=window.open('','_blank');w.document.write(`<!doctype html><html><head><title>vocab.ai revision PDF</title><meta charset="utf-8"><style>body{font-family:system-ui,Arial,sans-serif;padding:24px;line-height:1.45}h1{margin-top:0}article{border-bottom:1px solid #ddd;padding:12px 0;break-inside:avoid}p{margin:5px 0}@media print{button{display:none}}</style></head><body><button onclick="window.print()">Save as PDF</button><h1>vocab.ai - Government Exam English Revision</h1>${rows}</body></html>`);w.document.close();w.focus();setTimeout(()=>w.print(),300)}
-function clearHistory(){if(confirm('Clear all saved revision entries?')){localStorage.removeItem(KEY);renderHistory();status('History cleared.','ok')}}
+function savePdf(){const h=load();if(!h.length){status('No saved entries to download.','warn');return}const rows=h.map((x,i)=>`<article><h3>${i+1}. ${esc(x.term)}</h3><p><b>Section:</b> ${esc(normalizeMode(x.mode))}</p><p><b>Hindi Meaning:</b> ${esc(x.meaning||'-')}</p><p><b>Synonyms:</b> ${esc((x.synonyms||[]).join(', ')||'-')}</p><p><b>Antonyms:</b> ${esc((x.antonyms||[]).join(', ')||'-')}</p><p><b>Example:</b> ${esc(x.example||'-')}</p><p><b>Example Meaning in Hindi:</b> ${esc(x.exampleHindi||'-')}</p></article>`).join('');const w=window.open('','_blank');w.document.write(`<!doctype html><html><head><title>vocab.ai revision PDF</title><meta charset="utf-8"><style>body{font-family:system-ui,Arial,sans-serif;padding:24px;line-height:1.45}h1{margin-top:0}article{border-bottom:1px solid #ddd;padding:12px 0;break-inside:avoid}p{margin:5px 0}@media print{button{display:none}}</style></head><body><button onclick="window.print()">Save as PDF</button><h1>vocab.ai - Government Exam English Revision</h1>${rows}</body></html>`);w.document.close();w.focus();setTimeout(()=>w.print(),300)}
+async function clearHistory(){if(!confirm('Clear all saved revision entries?'))return;localStorage.removeItem(KEY);if(cloudCollection()){try{const snap=await cloudCollection().get();const batch=db.batch();snap.docs.forEach(doc=>batch.delete(doc.ref));await batch.commit();status('Cloud and local history cleared.','ok')}catch(e){status('Local history cleared. Cloud clear failed.','warn')}}else status('History cleared.','ok');renderHistory()}
+function firebaseConfigured(){const c=window.VOCAB_AI_FIREBASE_CONFIG;return !!(c&&c.apiKey&&c.projectId&&!String(c.apiKey).startsWith('PASTE_'))}
+function syncUi(title,text,enabled=false,signed=false){$('syncTitle').textContent=title;$('syncText').textContent=text;$('signInBtn').disabled=!enabled||signed;$('signInBtn').hidden=signed;$('signOutBtn').hidden=!signed}
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+async function initSync(){if(!firebaseConfigured()){syncUi('Local-only mode','Add Firebase config to enable Google sign-in and cross-device sync.',false,false);renderHistory();return}try{await loadScript('https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js');await Promise.all([loadScript('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js'),loadScript('https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js')]);firebase.initializeApp(window.VOCAB_AI_FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();syncBooted=true;syncUi('Sync ready','Sign in with Google to sync saved revision entries across devices.',true,false);auth.onAuthStateChanged(async u=>{user=u;if(cloudUnsub){cloudUnsub();cloudUnsub=null}if(!u){syncUi('Sync ready','Sign in with Google to sync saved revision entries across devices.',true,false);renderHistory();return}syncUi('Syncing','Signed in as '+(u.email||'Google user')+'. Local entries will merge with cloud.',true,true);await mergeLocalToCloud();listenCloud()})}catch(e){syncUi('Local-only mode','Firebase scripts could not load. Local revision still works.',false,false);renderHistory()}}
+async function signIn(){if(!auth){status('Firebase is not configured yet.','warn');return}try{const provider=new firebase.auth.GoogleAuthProvider();await auth.signInWithPopup(provider)}catch(e){try{await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider())}catch(err){status('Sign-in failed. Check Firebase Auth settings.','err')}}}
+async function signOut(){if(auth)await auth.signOut()}
+async function mergeLocalToCloud(){const h=load(),col=cloudCollection();if(!col||!h.length)return;const batch=db.batch();h.forEach(x=>batch.set(col.doc(String(x.id)),x,{merge:true}));await batch.commit()}
+function listenCloud(){const col=cloudCollection();if(!col)return;cloudUnsub=col.orderBy('savedAtMs','desc').onSnapshot(snap=>{const cloud=snap.docs.map(doc=>({id:doc.id,...doc.data(),mode:normalizeMode(doc.data().mode)}));saveLocal(cloud,false);renderHistory();syncUi('Synced','Signed in as '+(user.email||'Google user')+'. Entries are synced across devices.',true,true)},()=>syncUi('Sync issue','Could not read cloud entries. Check Firestore setup.',true,true))}
 $('term').addEventListener('keydown',e=>{if(e.key==='Enter')generateEntry()});
-initTheme();setMode(FULL_ANT_SYN);renderHistory();
+initTheme();setMode(FULL_ANT_SYN);renderHistory();initSync();
 </script>
 </body>
 </html>
