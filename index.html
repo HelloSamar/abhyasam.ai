@@ -6,15 +6,15 @@
 <title>abhyasam.ai</title>
 <link rel="stylesheet" href="assets/styles.css">
 </head>
-<body data-theme="light">
+<body>
 <div class="app-shell">
-  <header class="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-brand">
       <div class="brand"><span class="brand-main">abhyasam</span><span class="brand-ai">.ai</span></div>
       <p>Exam revision workspace</p>
     </div>
     <nav class="nav" id="mainNav" aria-label="Main sections"></nav>
-  </header>
+  </aside>
 
   <main class="workspace">
     <section class="workspace-top no-print">
@@ -22,7 +22,7 @@
         <p class="eyebrow">Government exam preparation</p>
         <h1>Study, organise, revise.</h1>
       </div>
-      <div class="top-note">English is the default workspace. Use the top menu to switch subjects.</div>
+      <div class="top-note">English is the default workspace. Use the left menu to switch subjects.</div>
     </section>
 
     <section id="syllabus" class="panel section hidden">
@@ -56,14 +56,11 @@ Subject can be Geography, History, Science, Polity, Economics, Environment, Stat
       <div class="section-body"><div class="grid"><div class="input-card no-print"><label>Paste computer content</label><textarea id="computerPaste" placeholder="Paste notes on MS Office, internet, hardware, software, shortcuts, cyber security, etc."></textarea><div class="row"><button data-analyse="computer">Organise Computer note</button><button class="secondary" id="saveComputerBtn">Save</button></div></div><div class="result-card" id="computerOut"><div class="out-title">Ready for input</div><div class="out">Paste computer-awareness content to make a clean revision note.</div></div></div></div>
     </section>
 
-    <section class="panel saved-panel" id="savedPanel"><h2 class="print-title">abhyasam.ai saved revision list</h2><div class="syncbar no-print"><div><div class="out-title">Sync</div><div class="sync-status" id="syncStatus">Local mode. Sign in to sync across devices.</div></div><div class="row"><button id="loginBtn">Sign in with Google</button><button class="secondary hidden" id="syncNowBtn">Sync now</button><button class="secondary hidden" id="logoutBtn">Sign out</button></div></div><div class="section-head no-print"><div><p class="eyebrow">Revision bank</p><h2>Saved revision list</h2><p class="sub">Saved locally first. After Google sign-in, saved entries and syllabus checklist sync across devices.</p></div><div class="row"><button id="printBtn">Download PDF</button><button class="secondary" id="jsonBtn">Download JSON</button><button class="secondary" id="clearSavedBtn">Clear saved</button></div></div><div class="section-body"><div id="history" class="history"></div></div></section>
+    <section class="panel saved-panel" id="savedPanel"><h2 class="print-title">abhyasam.ai saved revision list</h2><div class="section-head no-print"><div><p class="eyebrow">Revision bank</p><h2>Saved revision list</h2><p class="sub">Saved locally first. After Google sign-in, saved entries and syllabus checklist sync across devices.</p></div><div class="row"><button id="printBtn">Download PDF</button><button class="secondary" id="jsonBtn">Download JSON</button><button class="secondary" id="clearSavedBtn">Clear saved</button></div></div><div class="section-body"><div id="history" class="history"></div></div><div class="syncbar no-print"><div class="sync-section"><div class="out-title">Cloud Sync</div><div class="sync-status" id="syncStatus">Local mode. Sign in to sync across devices.</div></div><div class="row"><button id="loginBtn" class="primary-sync">Sign in with Google</button><button class="secondary hidden" id="syncNowBtn">Sync now</button><button class="secondary hidden" id="logoutBtn">Sign out</button></div></div></section>
   </main>
 </div>
 <script>
 try {
-  if (localStorage.getItem('theme') === null) {
-    localStorage.setItem('theme', JSON.stringify('light'));
-  }
   if (!localStorage.getItem('abhyasam-default-english-v1')) {
     localStorage.setItem('active-section', JSON.stringify('english'));
     localStorage.setItem('abhyasam-default-english-v1', JSON.stringify(true));

@@ -1,57 +1,52 @@
 # abhyasam.ai
 
-A dedicated revision workspace for government exam aspirants.
+A focused revision workspace for government exam aspirants.
 
-Organise your syllabus progress, convert pasted notes into exam-focused revision data, and build English vocabulary lists with Hindi support.
+## Overview
 
-## Current Goals
+Organize syllabus progress, convert raw notes into exam-focused revisions, and build English vocabulary with Hindi support. Sync data across devices using Google sign-in.
 
-The app is being developed as a focused revision workspace. It currently includes the following sections:
-
-- Syllabus
-- General Studies
-- English
-- Mathematics
-- Reasoning
-- Computer
-
-## Section Plans
+## Sections
 
 ### Syllabus
+Checklist for tracking completed topics. Mark items done and see your progress.
 
-This is a blank checklist area for now. Users can add syllabus topics, mark them as completed, and see how many topics are checked off out of the total.
-
-### General Studies
-
-Users can paste notes or raw content. The app organises this content from the perspectives of SSC CGL and CHSL exams.
-
-Supported subject categories include:
-
-- Geography: Physical, Indian, World
-- History: Ancient, Medieval, Modern
-- Science: Physics, Chemistry, Biology
-- Polity
-- Economics: Micro & Macro, Indian
-- Environment
-- Static General Knowledge (GK)
-- Current Affairs
+### General Studies  
+Paste raw GS notes. Auto-categorized into: Geography, History, Science, Polity, Economics, Environment, Static GK, Current Affairs.
 
 ### English
+Five vocabulary categories:
+- **One Word Substitution** — Single word replacements  
+- **Idioms** — Phrases and expressions  
+- **Antonyms & Synonyms** — Word opposites and alternatives  
+- **Spellings** — Common misspelled words  
+- **Grammar** — Rules and topics  
 
-Users can select from the following areas:
+Each entry includes: Hindi meaning, examples, two synonyms, two antonyms, Hindi translations.
 
-- One Word Substitution
-- Idioms
-- Antonyms & Synonyms
-- Spellings
-- Grammar
+### Mathematics, Reasoning, Computer
+Paste content and convert to clean revision notes with subject tags and structured formatting.
 
-For English entries, the app maintains the existing revision workflow: providing the Hindi meaning, two synonyms, two antonyms, an exam-style example, the Hindi meaning of the example, a saved revision list, and options for PDF download.
+## Features
 
-### Mathematics and Reasoning
+- **Local Storage** — All data saved to browser  
+- **Google Sync** — Sign in to sync across devices  
+- **PDF Download** — Generate printable PDFs of saved revisions  
+- **JSON Export** — Download all data for backup  
+- **Delete Items** — Remove individual saved entries  
+- **Clean UI** — Distraction-free study interface  
 
-Users can paste raw content, question text, or notes. The app will convert it into a clearer revision structure.
+## Getting Started
 
-### Computer
+1. Open the app and select a section  
+2. Enter content or select a vocabulary category  
+3. Generate or organize output  
+4. Save to your revision bank  
+5. Sign in with Google to sync across devices  
+6. Download PDF or JSON when ready  
 
-Users can paste computer-awareness notes and organise them for exam revision.
+## Built With
+
+- HTML5, CSS3, JavaScript (ES6+)  
+- Firebase Authentication & Firestore  
+- Local Storage API  

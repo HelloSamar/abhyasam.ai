@@ -1,0 +1,60 @@
+================================================================================
+                         abhyasam.ai - IMPROVEMENTS
+================================================================================
+
+MAIN CHANGES:
+
+✓ UI/UX Improvements
+  • Login moved to bottom (Cloud Sync section) instead of top nav
+  • Dark theme completely removed (cleaner, faster)
+  • Delete (×) button added to each saved item card
+  • Sync status shows email when logged in
+
+✓ Bug Fixes
+  • Removed non-functional theme initialization
+  • Fixed default section (now loads to English)
+  • Simplified navigation (no unused icon buttons)
+
+✓ README Rewritten
+  • Concise 2-sentence overview
+  • Clear feature descriptions
+  • "Getting Started" guide added
+  • Better organized sections
+
+✓ Code Quality
+  • 150+ lines of theme code removed
+  • deleteItem() function for removing saved revisions
+  • Improved renderHistory() with delete button integration
+  • Mobile-optimized card delete button styling
+
+================================================================================
+
+KEY FEATURES (unchanged):
+
+📝 Vocabulary Builder
+   - Choose: One Word Substitution, Idioms, Antonyms & Synonyms, Spelling, Grammar
+   - Get: Hindi meaning, examples, synonyms, antonyms
+   - Save: To local storage or cloud (after login)
+
+📚 Note Organizer
+   - Paste raw content from: General Studies, Math, Reasoning, Computer
+   - Auto-tags with subject category
+   - Structured for revision
+
+☑️  Syllabus Tracker
+   - Add topics, mark complete, track progress
+
+💾 Save & Sync
+   - Local storage (always)
+   - Google sync (after sign-in)
+   - Download PDF or JSON
+
+================================================================================
+
+FILES:
+  index.html       - Clean HTML, no dark theme logic
+  styles.css       - Removed 150+ lines of theme code
+  app.js          - Added deleteItem(), cleaned up theme functions
+  README.md       - Completely rewritten
+
+================================================================================
