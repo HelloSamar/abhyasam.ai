@@ -1,4 +1,4 @@
-name: Deploy vocab.ai
+name: Deploy english.ai
 
 on:
   push:
