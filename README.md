@@ -29,7 +29,7 @@ Supported subject buckets:
 - History - Ancient, Medieval, Modern
 - Science - Physics, Chemistry, Biology
 - Polity
-- Economics
+- Economics - Micro & Macro, Indian
 - Environment
 - Static GK
 - Current Affairs
