@@ -36,6 +36,6 @@ The app is designed around common vocabulary needs in government exams:
 
 - One Word Substitution
 - Idioms
-- Antonyms and synonyms
+- Antonyms & Synonyms
 - Spellings
 - Important words and phrases
